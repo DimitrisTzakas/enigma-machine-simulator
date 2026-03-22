@@ -21,7 +21,7 @@ Built at 17 (Γ' Λυκείου) in Python 2, recently updated to Python 3 while
 Open a terminal in the project folder and run:
 
 ```
-python src/enigmaGraphic-27.py
+python src/main.py
 ```
 
 Ensure Python 3.x is installed and leave `assets/` in place for sound and image resources.
@@ -34,8 +34,8 @@ Ensure Python 3.x is installed and leave `assets/` in place for sound and image 
 
 ## Code modules
 
-- `src/enigmaGraphic-27.py` — GUI and user interaction
-- `src/enigma9.py` — Enigma machine logic
+- `src/main.py` — GUI and user interaction
+- `src/engine.py` — Enigma machine logic
 - `src/wckToolTips.py` — tooltip helper
 
 ## Notes

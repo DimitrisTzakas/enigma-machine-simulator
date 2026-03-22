@@ -12,5 +12,5 @@ jobs:
       - name: Verify key files exist
         run: |
           test -f README.md
-          test -f src/enigmaGraphic-27.py
-          test -f src/enigma9.py
+          test -f src/main.py
+          test -f src/engine.py
