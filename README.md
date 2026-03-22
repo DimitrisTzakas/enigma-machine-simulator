@@ -1,6 +1,6 @@
 # Enigma Machine Simulator
 
-![Python](https://img.shields.io/badge/Python-3.x-blue) ![Windows](https://img.shields.io/badge/Platform-Windows-green) ![License](https://img.shields.io/badge/License-Unlicensed-lightgrey)
+![Python](https://img.shields.io/badge/Python-3.x-blue) ![Windows](https://img.shields.io/badge/Platform-Windows-green) ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Introduction
 
