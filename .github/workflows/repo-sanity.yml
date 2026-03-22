@@ -1,0 +1,16 @@
+﻿name: repo-sanity
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  metadata-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify key files exist
+        run: |
+          test -f README.md
+          test -f src/enigmaGraphic-27.py
+          test -f src/enigma9.py

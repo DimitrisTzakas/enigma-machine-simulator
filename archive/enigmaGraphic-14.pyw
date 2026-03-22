@@ -1,0 +1,303 @@
+﻿import enigma6 as enigma
+from Tkinter import *
+from tkFont import Font
+from winsound import PlaySound
+import wckToolTips
+
+#set main window
+WIDTH=500
+HEIGHT=720
+root=Tk()
+root.resizable(False, False)
+root.wm_title("Enigma I --- 1ο ΕΠΑΛ ΜΟΛΑΩΝ")
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+x = (screen_width/2) - (WIDTH/2)
+y = (screen_height/2) - (HEIGHT/2)
+root.configure(width=WIDTH,height=HEIGHT)
+root.geometry('%dx%d+%d+%d' % (WIDTH, HEIGHT, x, y))
+#end setting main window
+frameLogo=Frame(root,width=WIDTH, height=60,bd=0)
+frameLogo.grid(row=0,sticky='wen')
+frameSettings = Frame(root,width=WIDTH, height=150,bg="grey22")
+frameSettings.grid(row=1,sticky='wen')
+frameLightboard = Frame(root,width=WIDTH, height=180,bg='grey20')
+frameLightboard.grid(row=2,sticky='wen')
+frameKeyboard = Frame(root,width=WIDTH, height=180,bg="grey15")
+frameKeyboard.grid(row=3,sticky='wen')
+framePlugboard = Frame(root,width=WIDTH, height=100,bg="dark goldenrod")
+framePlugboard.grid(row=4,sticky='wen')
+frameOutText = Frame(root,width=WIDTH, height=50,bg="grey15")
+frameOutText.grid(row=5,sticky='wen')
+
+#------place ring frame inside settings frame---
+ringFrame=Frame(frameSettings,height=150,width=WIDTH/3)
+ringFrame.place(relx=0.17,rely=0.15,anchor=N)
+#------
+#------place rotor controls frame inside settings frame---
+rotorFrame=Frame(frameSettings,height=150,width=WIDTH/3)
+rotorFrame.place(relx=0.5,rely=0.15,anchor=N)
+#------
+#------place rotor selection frame inside settings frame---
+rotorSelectFrame=Frame(frameSettings,height=150,width=WIDTH/3)
+rotorSelectFrame.place(relx=0.82,rely=0.15,anchor=N)
+#------
+#------place reflector selection frame inside settings frame---
+reflectorFrame=Frame(frameSettings,height=150,width=WIDTH/3)
+reflectorFrame.place(relx=0.82,rely=0.8,anchor=S)
+#------
+
+#place logo
+img = PhotoImage(file = "enigmaLogo.gif")
+logoLabel=Label(frameLogo,width=WIDTH, height=60,image=img,bg='grey20',bd=0)
+logoLabel.place(relx=0.5,rely=0.5,anchor=CENTER)
+
+#place variant
+variantLabel=Label(frameSettings,text='Enigma-Wehrmacht',fg='gold',bg='grey22',font=("bold",11))
+variantLabel.place(relx=0.17,rely=0.75,anchor='center')
+
+
+#fonts
+rButtonFont=Font(size=6,weight='bold')
+rLabelFont=Font(size=8,weight='bold')
+rbFont=Font(size=10)
+rlFont=Font(size=24,weight='bold')
+
+#reflector selection and action
+def reflectorButtonAction():
+    PlaySound('tick.wav',1)
+    if reflectorLabel['text']=='B':
+        reflectorLabel['text']='C'
+        enigma.reflector=enigma.reflectors[1]
+    else:
+        reflectorLabel['text']='B'
+        enigma.reflector=enigma.reflectors[0]
+
+def placeReflectorSelection():
+    global reflectorLabel
+    reflectorButtonLeft=Button(reflectorFrame,text='◄',font=rButtonFont,width=3,padx=1,command=reflectorButtonAction)
+    reflectorButtonLeft.grid(row=0,column=0)
+    reflectorLabel=Label(reflectorFrame, text='B',bg='grey',font=rLabelFont,width=3,padx=0,relief="sunken")
+    reflectorLabel.grid(row=0,column=1)
+    reflectorButtonLeft=Button(reflectorFrame,text='►',font=rButtonFont,width=3,padx=1,command=reflectorButtonAction)
+    reflectorButtonLeft.grid(row=0,column=2)
+
+#rings configuration and action
+def ringButtonAction(ring,arrow):
+    PlaySound('tick.wav',1)
+    if arrow=='▲':
+        enigma.setRotorsRing(ring,1)
+        ringLabel[ring]['text']=str(int(ringLabel[ring].cget("text")) % 26 + 1)
+    elif arrow== '▼':
+        enigma.setRotorsRing(ring,-1)
+        ringLabel[ring]['text']=str(int(ringLabel[ring].cget("text"))-1)
+        if ringLabel[ring].cget("text")=='0': ringLabel[ring]['text']='26'
+    if len(ringLabel[ring].cget("text"))==1:
+        ringLabel[ring]['text']='0'+ringLabel[ring].cget("text")  # keep 2 digits on ring labels
+
+def placeRingControls():
+    global ringLabel
+    ringButtonUp=[None]*3
+    ringLabel=[None]*3
+    ringButtonDown=[None]*3
+    for k in range(3):
+        ringButtonUp[k]=Button(ringFrame,text='▲',font=rButtonFont,width=3,padx=1,command=lambda x=k:ringButtonAction(x,'▲'))
+        ringButtonUp[k].grid(row=0,column=k)
+        ringLabel[k]=Label(ringFrame, text='01',bg='grey',font=rLabelFont,width=3,padx=0,relief="sunken")
+        ringLabel[k].grid(row=1,column=k)
+        ringButtonDown[k]=Button(ringFrame,text='▼',font=rButtonFont,width=3,padx=1,command=lambda x=k:ringButtonAction(x,'▼'))
+        ringButtonDown[k].grid(row=2,column=k)
+    for i in range(3): wckToolTips.register(ringLabel[i], "01-A|02-B|03-C|04-D|05-E|06-F|07-G|08-H") 
+
+#rotors configuration and action
+def rotorButtonAction(rotor,arrow): 
+    alphabet=enigma.alphabet
+    PlaySound('tick.wav',1)
+    if arrow=='▲':
+        enigma.setRotorsSetting(rotor,1)
+        rotorLabel[rotor]['text']=alphabet[(alphabet.index(rotorLabel[rotor].cget("text"))+1) % 26]
+    elif arrow== '▼':
+        enigma.setRotorsSetting(rotor,-1)
+        rotorLabel[rotor]['text']=alphabet[(alphabet.index(rotorLabel[rotor].cget("text"))-1) % 26]
+
+def placeRotorControls():
+    global rotorLabel
+    rotorButtonUp=[None]*3
+    rotorLabel=[None]*3
+    rotorButtonDown=[None]*3
+    for k in range(3):
+        rotorButtonUp[k]=Button(rotorFrame,text='▲',font=rbFont,width=4,padx=2,command=lambda x=k:rotorButtonAction(x,'▲'))
+        rotorButtonUp[k].grid(row=0,column=k)
+        rotorLabel[k]=Label(rotorFrame, text='A',bg='grey70',fg='grey20',font=rlFont,width=2,relief="raised")
+        rotorLabel[k].grid(row=1,column=k)
+        rotorButtonDown[k]=Button(rotorFrame,text='▼',font=rbFont,width=4,padx=2,command=lambda x=k:rotorButtonAction(x,'▼'))
+        rotorButtonDown[k].grid(row=2,column=k)
+
+#rotor selection and action
+def rotorSelectionAction(rotor,arrow):
+    saveRotorsInstalled=enigma.rotorsInstall # save rotors installed before initialization
+    saveReflector=enigma.reflector # save reflector installed before initialization
+    enigma.initialize()
+    #reset the machine if any rotor is replaced by another
+    for k in range(3):
+        rotorLabel[k]["text"]='A'
+        ringLabel[k]["text"]='01'
+    #end reseting
+    enigma.rotorsInstall=saveRotorsInstalled #restore rotors installed before initialization
+    enigma.reflector=saveReflector #restore reflector installed before initialization
+    PlaySound('tick.wav',1)
+    rotors=['I','II','III','IV','V']
+    if arrow=='▲':
+        selection=(rotors.index(rotorSelectionLabel[rotor].cget("text"))+1) % 5 
+        enigma.setRotorsInstall(rotor,selection)
+        rotorSelectionLabel[rotor]['text']=rotors[selection]
+    elif arrow== '▼':
+        selection=(rotors.index(rotorSelectionLabel[rotor].cget("text"))-1) % 5 
+        enigma.setRotorsInstall(rotor,selection)
+        rotorSelectionLabel[rotor]['text']=rotors[selection]
+    
+        
+def placeRotorSelection():
+    global rotorSelectionLabel
+    rotorSelectionButtonUp=[None]*3
+    rotorSelectionLabel=[None]*3
+    rotorSelectionButtonDown=[None]*3
+    for k in range(3):
+        rotorSelectionButtonUp[k]=Button(rotorSelectFrame,text='▲',font=rButtonFont,width=3,padx=2,command=lambda x=k:rotorSelectionAction(x,'▲'))
+        rotorSelectionButtonUp[k].grid(row=0,column=k)
+        rotorSelectionButtonDown[k]=Button(rotorSelectFrame,text='▼',font=rButtonFont,width=3,padx=2,command=lambda x=k:rotorSelectionAction(x,'▼'))
+        rotorSelectionButtonDown[k].grid(row=2,column=k)
+    k=0
+    for r in ['I','II','III']:
+        rotorSelectionLabel[k]=Label(rotorSelectFrame, text=r,bg='grey',font=rLabelFont,width=3,relief="sunken",borderwidth=2)
+        rotorSelectionLabel[k].grid(row=1,column=k)
+        k+=1
+
+def placeLightboard():
+    global lightKey,lightBoard
+    lightKey=[None]*26
+    lightBoard=Canvas(frameLightboard,width=WIDTH,height=180,bg='grey20',highlightthickness=0)
+    lightBoard.place(relx=0.5,rely=0.5,anchor=CENTER)
+    cw=int(lightBoard["width"]) #canvas widht
+    ch=int(lightBoard["height"]) #canvas height
+    x=cw/10
+    y=ch/4
+    R=cw/30
+    for k in range(9):
+        x=cw/10*(k+1)
+        coords=(x-R,y-R,x+R,y+R)
+        lightBoard.create_oval(coords,fill='grey15',outline='grey10')
+        lightKey[k]=lightBoard.create_text(x,y,text=qwerty[k],fill='grey25',font=('BOLD',15))
+    x=cw/9
+    y=ch/2
+    R=cw/30    
+    for k in range(8):
+        x=cw/10*(k+1)+1.5*R
+        coords=(x-R,y-R,x+R,y+R)
+        lightBoard.create_oval(coords,fill='grey15',outline='grey10')
+        lightKey[k+9]=lightBoard.create_text(x,y,text=qwerty[k+9],fill='grey25',font=('BOLD',15))
+    x=cw/9
+    y=ch/1.33
+    R=cw/30    
+    for k in range(9):
+        x=cw/10*(k+1)
+        coords=(x-R,y-R,x+R,y+R)
+        lightBoard.create_oval(coords,fill='grey15',outline='grey10')
+        lightKey[k+17]=lightBoard.create_text(x,y,text=qwerty[k+17],fill='grey25',font=('BOLD',15))                                             
+
+
+def keyPressAction(event,x):
+    global keyLit       #key lit to be used by keyReleaseAction() to shut the key light
+    keyBoard.itemconfigure(key[x],fill='black',outline='grey40')            #change key outline effect
+    keyBoard.itemconfigure(keyText[x],fill='grey40',font=('NORMAL',14))      #change keyText color effect
+    PlaySound('key-Down.wav',1)
+    newChar=enigma.encryptChar(qwerty[x])
+    x=qwerty.index(newChar)
+    lightBoard.itemconfigure(lightKey[x],fill='yellow')
+    keyLit=x
+    displays=[enigma.rotor1Display,enigma.rotor2Display,enigma.rotor3Display]
+    for i in range(3): rotorLabel[i]["text"]=enigma.charFromReducedOrd(displays[i]-1)
+
+def keyReleaseAction(event,x):
+    PlaySound('key-Up.wav',1)
+    lightBoard.itemconfigure(lightKey[keyLit],fill='grey25')
+    keyBoard.itemconfigure(key[x],fill='grey10',outline='grey90')        #change key outline effect return to normal
+    keyBoard.itemconfigure(keyText[x],fill='grey90',font=('BOLD',15))    #change keyText color effect return to normal
+    
+def placeKeyboard():
+    global keyText,key,keyBoard
+    key=[None]*26
+    keyText=[None]*26
+    keyBoard=Canvas(frameKeyboard,width=WIDTH,height=180,bg='grey18',highlightthickness=0)
+    keyBoard.place(relx=0.5,rely=0.5,anchor=CENTER)
+    cw=int(keyBoard["width"]) #canvas widht
+    ch=int(keyBoard["height"]) #canvas height
+    x=cw/10
+    y=ch/4
+    R=cw/30
+    for k in range(9):
+        x=cw/10*(k+1)
+        coords=(x-R,y-R,x+R,y+R)
+        key[k]=keyBoard.create_oval(coords,fill='grey10',outline='grey90',width=2,tags=qwerty[k])
+        keyText[k]=keyBoard.create_text(x,y,text=qwerty[k],fill='grey90',font=('BOLD',15),tags=qwerty[k])
+    x=cw/9
+    y=ch/2
+    R=cw/30    
+    for k in range(8):
+        x=cw/10*(k+1)+1.5*R
+        coords=(x-R,y-R,x+R,y+R)
+        key[k+9]=keyBoard.create_oval(coords,fill='grey10',outline='grey90',width=2,tags=qwerty[k+9])
+        keyText[k+9]=keyBoard.create_text(x,y,text=qwerty[k+9],fill='grey90',font=('BOLD',15),tags=qwerty[k+9])
+    x=cw/9
+    y=ch/1.33
+    R=cw/30    
+    for k in range(9):
+        x=cw/10*(k+1)
+        coords=(x-R,y-R,x+R,y+R)
+        key[k+17]=keyBoard.create_oval(coords,fill='grey10',outline='grey90',width=2,tags=qwerty[k+17])
+        keyText[k+17]=keyBoard.create_text(x,y,text=qwerty[k+17],fill='grey90',font=('BOLD',15),tags=qwerty[k+17])      
+    for k in range(26): keyBoard.tag_bind(qwerty[k],'<Button-1>',lambda event,x=k: keyPressAction(event,x))
+    for k in range(26): keyBoard.tag_bind(qwerty[k],'<ButtonRelease-1>',lambda event,x=k: keyReleaseAction(event,x))
+    
+def placePlugboard():
+    global lightKey
+    plugKey=[None]*26
+    plugBoard=Canvas(framePlugboard,width=WIDTH,height=100,bg='dark goldenrod',highlightthickness=0)
+    plugBoard.place(relx=0.5,rely=0.5,anchor=CENTER)
+    cw=int(plugBoard["width"]) #canvas widht
+    ch=int(plugBoard["height"]) #canvas height
+    x=cw/10
+    y=ch/5
+    R=cw/70
+    for k in range(9):
+        x=cw/10*(k+1)
+        coords=(x-R,y-R,x+R,y+R)
+        plugKey[k]=plugBoard.create_oval(coords,fill='grey20',outline='grey90',width=2)
+        plugBoard.create_text(x-2.5*R,y,text=qwerty[k],fill='grey20',font=('BOLD',11))
+    x=cw/9
+    y=ch/2
+    R=cw/70    
+    for k in range(8):
+        x=cw/10*(k+1)+4*R
+        coords=(x-R,y-R,x+R,y+R)
+        plugKey[k+9]=plugBoard.create_oval(coords,fill='grey20',outline='grey90',width=2)
+        plugBoard.create_text(x-2.5*R,y,text=qwerty[k+9],fill='grey20',font=('BOLD',11))
+    x=cw/9
+    y=ch/1.25
+    R=cw/70    
+    for k in range(9):
+        x=cw/10*(k+1)
+        coords=(x-R,y-R,x+R,y+R)
+        plugKey[k+17]= plugBoard.create_oval(coords,fill='grey20',outline='grey90',width=2)
+        plugBoard.create_text(x-2.5*R,y,text=qwerty[k+17],fill='grey20',font=('BOLD',11))           
+
+qwerty='QWERTZUIOASDFGHJKPYXCVBNML'
+placeRingControls()
+placeRotorControls()
+placeRotorSelection()
+placeReflectorSelection()
+placeLightboard()
+placeKeyboard()
+placePlugboard()
+
+root.mainloop()
