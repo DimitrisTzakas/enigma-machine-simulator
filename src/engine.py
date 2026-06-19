@@ -2,7 +2,6 @@
 # 5 ROTORS (I,II,III,IV,V) -- 8 ROTORS (I,II,III,IV,V,VI,VII,VIII)
 # 2 REFLECTORS (B,C)
 # PLUGBOARD
-import msvcrt
 import os
 def charFromPlugBoard(x):
     L=[[],[]]
@@ -104,7 +103,7 @@ def setRotorsRing(rotor,s): # from left to right
 
 def setReflector(r):
     global reflector
-    reflector=reflectors(Ord(r)-66) # 'B' is ord->66
+    reflector=reflectors[ord(r)-66] # 'B' is ord->66
 
 def advanceRotors(r1,r2,r3): # from right to left
     global rotor1Display, rotor2Display, rotor3Display
