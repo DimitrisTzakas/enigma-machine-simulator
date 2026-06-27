@@ -1,6 +1,16 @@
+<div align="center">
+
+<img src="assets/enigmaLogo.gif" alt="Enigma logo" width="120">
+
 # Enigma Machine Simulator
 
-![Python](https://img.shields.io/badge/Python-3.x-blue) ![Windows](https://img.shields.io/badge/Platform-Windows-green) ![License](https://img.shields.io/badge/License-MIT-green)
+A functional **Enigma M3 (Kriegsmarine)** simulator with a Tkinter GUI — built from scratch at age 17, now updated for Python 3.
+
+![Python](https://img.shields.io/badge/Python-3.x-blue) ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-green) ![License](https://img.shields.io/badge/License-MIT-green)
+
+<img src="assets/hires-wehrmachtkey-stab.jpg" alt="German Wehrmacht Enigma machine" width="560">
+
+</div>
 
 ## Introduction
 
@@ -14,7 +24,7 @@ Built at 17 (Γ' Λυκείου) in Python 2, recently updated to Python 3 while
 - Plugboard letter swaps
 - Live keypress encryption with UI updates
 - Optional text mode for long phrase encryption
-- Sound effects for key events
+- Sound effects for key events (Windows)
 
 ## How to Run
 
@@ -30,7 +40,20 @@ Ensure Python 3.x is installed and leave `assets/` in place for sound and image 
 
 - Python 3.x
 - Tkinter (standard with Python)
-- Windows (required for `winsound`)
+- Sound effects use `winsound` and play on Windows only; the app runs without sound on macOS/Linux.
+
+## How it works
+
+The encryption pipeline mirrors the real machine: each letter passes through the
+plugboard, then the three rotors, bounces off the reflector, returns back through
+the rotors and the plugboard. Stepping (including the double-step anomaly) and the
+dual-notch rotors VI-VIII are modelled faithfully.
+
+<p align="center">
+  <img src="assets/460px-Enigma-rotor-pin-contacts.jpg" alt="Enigma rotor contacts" width="280">
+</p>
+
+For a full breakdown of the algorithm, see [`docs/ALGORITHM.md`](docs/ALGORITHM.md).
 
 ## Code modules
 
@@ -45,7 +68,8 @@ Ensure Python 3.x is installed and leave `assets/` in place for sound and image 
 - The code is preserved in original style and is educational, not production-grade.
 
 ## Credits
+
 Original Project (2017) by Dimitris Tzakas. Updated for Python 3 compatibility in 2026.
 
-
-
+**Image credits:** historical Enigma photographs are from Wikimedia Commons.
+Please verify each file's licence and add the author/licence line here before publishing.
