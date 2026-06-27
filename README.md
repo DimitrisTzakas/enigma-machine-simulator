@@ -67,9 +67,15 @@ For a full breakdown of the algorithm, see [`docs/ALGORITHM.md`](docs/ALGORITHM.
 - Archive versions are kept under `archive/` for historical reference.
 - The code is preserved in original style and is educational, not production-grade.
 
+## Image credits
+
+Historical images are included for educational illustration:
+
+- Enigma rotor photographs — from Wikimedia Commons:
+  [pin contacts](https://commons.wikimedia.org/wiki/File:Enigma-rotor-pin-contacts.jpg) and
+  [flat contacts](https://commons.wikimedia.org/wiki/File:Enigma-rotor-flat-contacts.jpg).
+  See each file page for the original author and licence.
+
 ## Credits
 
 Original Project (2017) by Dimitris Tzakas. Updated for Python 3 compatibility in 2026.
-
-**Image credits:** historical Enigma photographs are from Wikimedia Commons.
-Please verify each file's licence and add the author/licence line here before publishing.
