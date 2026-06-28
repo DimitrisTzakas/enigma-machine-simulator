@@ -1,7 +1,11 @@
 ﻿import engine as enigma
 from tkinter import *
 from tkinter.font import Font
-from winsound import PlaySound
+try:
+    from winsound import PlaySound
+except ImportError:  # macOS/Linux: run without sound
+    def PlaySound(*args):
+        pass
 import wckToolTips
 import tkinter.messagebox as tkMessageBox
 import os
